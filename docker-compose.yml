@@ -30,7 +30,7 @@ services:
         ports:
           - 80:80
         volumes:
-          - ~/dockerProject/nginx/conf.d :/etc/nginx/conf.d  #用我们创建的Nginx配置去替换容器中的默认配置，冒号前为我们创建的目录的路径
+          - ~/dockerProject/nginx/conf.d:/etc/nginx/conf.d  #用我们创建的Nginx配置去替换容器中的默认配置，冒号前为我们创建的目录的路径
           - ~/dockerProject/nginx/log:/var/log/nginx  #nginx日志位置
           - ~/dockerProject/nginx/nginx.conf:/etc/nginx/nginx.conf
           - ~/dockerProject/nginx/html:/usr/share/nginx/html
