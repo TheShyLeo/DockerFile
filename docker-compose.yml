@@ -1,15 +1,14 @@
-#部署mysql容器3
 version: '3'
 services:
     db:
         #构建mysql镜像
-        image: mysql:8.0
+        image: mysql:5.7
         container_name: mysql # 容器名
         restart: always
         command: [
-            '--character-set-server=utf8mb4',
-            '--collation-server=utf8mb4_general_ci',
-            '--max_connections=3000'
+            --character-set-server=utf8mb4,
+            --collation-server=utf8mb4_general_ci,
+            --max_connections=3000
         ] #设置utf8字符集
         environment:
           MYSQL_ROOT_PASSWORD: root #root管理员用户密码
@@ -19,8 +18,31 @@ services:
           - '3306:3306'  #host物理直接映射端口为6606
         volumes:
             #mysql数据库挂载到host物理机目录G盘的目录下/g/DockerProject/mysql/data
-          - "/g/DockerProject/mysql/data:/var/lib/mysql"  
+          - ~/dockerProject/mysql/data:/var/lib/mysql  
             #容器的配置目录挂载到host物理机目录/g/DockerProject/mysql/conf  
-          - "/g/DockerProject/mysql/conf:/etc/mysql/conf.d"
+          - ~/dockerProject/mysql/conf:/etc/mysql/conf.d
             #容器的日志目录挂载到host物理机目录/g/DockerProject/mysql/log 
-          - "/g/DockerProject/mysql/log:/var/log/mysql"
+          - ~/dockerProject/mysql/log:/var/log/mysql
+    nginx:
+        image: nginx
+        container_name: nginx
+        restart: always
+        ports:
+          - 80:80
+        volumes:
+          - ~/dockerProject/nginx/conf.d :/etc/nginx/conf.d  #用我们创建的Nginx配置去替换容器中的默认配置，冒号前为我们创建的目录的路径
+          - ~/dockerProject/nginx/log:/var/log/nginx  #nginx日志位置
+          - ~/dockerProject/nginx/nginx.conf:/etc/nginx/nginx.conf
+          - ~/dockerProject/nginx/html:/usr/share/nginx/html
+    # jenkins:
+    #     image: jenkins/jenkins:lts                 # 指定服务所使用的镜像 
+    #     container_name: jenkins                    # 容器名称
+    #     restart: always                            
+    #     user: root                                
+    #     ports:                                     # 对外暴露的端口定义
+    #       - 8080:8080
+    #       - 50000:50000
+    #     volumes:                                   # 卷挂载路径
+    #       - ~/dockerProject/jenkins/jenkins_home/:/var/jenkins_home  #冒号前为刚刚创建的路径，这里要写绝对路径
+    #       - /var/run/docker.sock:/var/run/docker.sock
+    #       - /usr/bin/docker:/usr/bin/docker
